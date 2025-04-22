@@ -22,14 +22,14 @@ jobs:
       # 安装依赖项
       - name: Install dependencies
         run: |
-          ./build.py ndk
           sudo apt-get update
           sudo apt-get install -y git zip unzip curl
 
       # 编译 Magisk
       - name: Build Magisk
         run: |
-          ./build.py all # 假设 Magisk 的编译脚本是 build.py
+          build.py ndk
+          build.py all # 假设 Magisk 的编译脚本是 build.py
 
       # 上传到仓库的最新 release
       - name: Upload to Latest Release
