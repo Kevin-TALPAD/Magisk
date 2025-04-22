@@ -1,0 +1,53 @@
+name: Build Magisk
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17' # 根据 Magisk 的需求调整版本
+          distribution: 'temurin'
+
+      # 安装依赖项
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git zip unzip curl
+
+      # 编译 Magisk
+      - name: Build Magisk
+        run: |
+          ./build.py all # 假设 Magisk 的编译脚本是 build.py
+
+      # 上传到仓库的最新 release
+      - name: Upload to Latest Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./output/magisk.zip # 替换为实际生成的文件路径
+          asset_name: magisk.zip
+          asset_content_type: application/zip
+
+  get_release:
+    name: Get latest release information
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get latest release
+        id: get_release
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/${{ github.repository }}/releases/latest
