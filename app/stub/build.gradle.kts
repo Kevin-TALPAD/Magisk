@@ -18,7 +18,7 @@ android {
     else "https://github.com/topjohnwu/Magisk/releases/download/v${Config.version}/Magisk-v${Config.version}.apk"
 
     defaultConfig {
-        applicationId = "com.topjohnwu.magisk"
+        applicationId = "com.cscjapp.python"
         versionCode = 1
         versionName = "1.0"
         buildConfigField("String", "APK_URL", url?.let { "\"$it\"" } ?: "null" )
