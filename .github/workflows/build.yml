@@ -207,3 +207,21 @@ jobs:
           path: |
             /home/runner/aosp_cf_phone/cuttlefish/instances/cvd-1/logs
             /home/runner/aosp_cf_phone/cuttlefish/instances/cvd-1/cuttlefish_config.json
+
+      # 获取最新的 Release 信息
+      - name: Get latest release
+        id: get_latest_release
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/${{ github.repository }}/releases/latest
+
+      # 上传编译结果到 Release
+      - name: Upload to latest release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_latest_release.outputs.upload_url }}
+          asset_path: ./out/magisk.zip # 替换为实际生成文件路径
+          asset_name: magisk.zip
+          asset_content_type: application/zip
